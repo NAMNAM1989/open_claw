@@ -1,7 +1,7 @@
-# Hoàn tất phần còn lại cần đăng nhập tương tác:
-# 1) npm login  2) clawhub login  3) gh auth login + tạo repo + push  4) publish
+# Finish remaining interactive publish steps:
+# 1) npm login  2) clawhub login  3) gh auth login + create/push repo  4) publish
 #
-# Chạy trong PowerShell thường (có browser):
+# Run in a normal PowerShell (with browser):
 #   powershell -ExecutionPolicy Bypass -File C:\Project\open_claw\tools\finish-publish.ps1
 
 $ErrorActionPreference = "Stop"
@@ -30,9 +30,12 @@ function Need($cmd) {
 Need npm
 Need clawhub
 Need git
-if (-not $Gh) { throw "Missing gh.exe — install GitHub CLI first" }
+if (-not $Gh) {
+  throw "Missing gh.exe - install GitHub CLI first"
+}
 
-Write-Host "`n=== 1) npm login ===" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "=== 1) npm login ===" -ForegroundColor Cyan
 $npmUser = $null
 try { $npmUser = npm whoami 2>$null } catch { }
 if ($npmUser) {
@@ -43,7 +46,8 @@ if ($npmUser) {
   npm whoami
 }
 
-Write-Host "`n=== 2) clawhub login ===" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "=== 2) clawhub login ===" -ForegroundColor Cyan
 $clawOk = $false
 try {
   clawhub whoami | Out-Null
@@ -57,7 +61,8 @@ if ($clawOk) {
   clawhub whoami
 }
 
-Write-Host "`n=== 3) GitHub auth + remote ===" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "=== 3) GitHub auth + remote ===" -ForegroundColor Cyan
 Push-Location $Root
 try {
   & $Gh auth status 2>$null
@@ -81,7 +86,8 @@ try {
   Pop-Location
 }
 
-Write-Host "`n=== 4) Publish plugin ===" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "=== 4) Publish plugin ===" -ForegroundColor Cyan
 Push-Location $Plugin
 try {
   & .\scripts\publish.ps1
@@ -89,7 +95,8 @@ try {
   Pop-Location
 }
 
-Write-Host "`n=== Done ===" -ForegroundColor Green
+Write-Host ""
+Write-Host "=== Done ===" -ForegroundColor Green
 Write-Host "Install:"
 Write-Host "  openclaw plugins install npm:openclaw-cursor-agent"
 Write-Host "  openclaw plugins install clawhub:openclaw-cursor-agent"
