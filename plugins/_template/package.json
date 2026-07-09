@@ -1,0 +1,31 @@
+{
+  "name": "openclaw-plugin-template",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "files": [
+    "dist/index.js",
+    "openclaw.plugin.json"
+  ],
+  "openclaw": {
+    "extensions": [
+      "./dist/index.js"
+    ]
+  },
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --external:openclaw",
+    "dev": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --external:openclaw --watch",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "openclaw": ">=2026.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.2",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.7.0",
+    "vitest": "^4.0.18"
+  }
+}

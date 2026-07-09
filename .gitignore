@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+npm-cache/
+
+# Build
+dist/
+*.tgz
+
+# Logs / OS
+*.log
+.DS_Store
+Thumbs.db
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+
+# Test / coverage
+coverage/
+.pytest_cache/

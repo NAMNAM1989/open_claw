@@ -1,0 +1,99 @@
+{
+  "id": "cursor-agent",
+  "name": "Cursor Agent",
+  "description": "Invoke the local Cursor Agent CLI for deep code analysis, troubleshooting, and diagnostics. Supports loading project .cursor/rules, AGENTS.md, and MCP servers.",
+  "version": "0.2.0",
+  "activation": {
+    "onStartup": true
+  },
+  "contracts": {
+    "tools": [
+      "cursor_agent"
+    ]
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "agentPath": {
+        "type": "string",
+        "description": "Full path to the agent command (agent.cmd / agent). Leave empty for auto-detection. The plugin will auto-resolve the underlying node + index.js binary"
+      },
+      "agentNodeBin": {
+        "type": "string",
+        "description": "Direct path to the Node.js executable bundled with Cursor Agent (e.g. .../versions/2026.x.x-xxx/node.exe). When set with agentEntryScript, bypasses .cmd/shell script resolution"
+      },
+      "agentEntryScript": {
+        "type": "string",
+        "description": "Direct path to the Agent entry script (e.g. .../versions/2026.x.x-xxx/index.js). Must be used together with agentNodeBin"
+      },
+      "defaultTimeoutSec": {
+        "type": "integer",
+        "minimum": 30,
+        "maximum": 1800,
+        "description": "Default timeout in seconds, default 600"
+      },
+      "noOutputTimeoutSec": {
+        "type": "integer",
+        "minimum": 10,
+        "maximum": 600,
+        "description": "No-output timeout in seconds; process is considered hung if no output for this duration, default 120"
+      },
+      "model": {
+        "type": "string",
+        "description": "Model for Cursor Agent to use, e.g. claude-4-sonnet. Leave empty for default"
+      },
+      "enableMcp": {
+        "type": "boolean",
+        "description": "Whether to enable MCP servers (--approve-mcps), default true"
+      },
+      "projects": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        },
+        "description": "Project name to path mapping"
+      },
+      "maxConcurrent": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 10,
+        "description": "Maximum concurrent Cursor CLI processes, default 3"
+      },
+      "enableAgentTool": {
+        "type": "boolean",
+        "description": "Whether to register Agent Tool for PI Agent auto-invocation (fallback mechanism), default true"
+      }
+    }
+  },
+  "uiHints": {
+    "agentPath": {
+      "label": "Agent CLI Path",
+      "help": "Full path to Cursor Agent CLI (agent.cmd / agent). Leave empty to auto-detect. The plugin auto-resolves the underlying node binary"
+    },
+    "agentNodeBin": {
+      "label": "Node Binary Path",
+      "help": "Direct path to Node.js executable bundled with Cursor Agent. Use with Entry Script for manual override"
+    },
+    "agentEntryScript": {
+      "label": "Entry Script Path",
+      "help": "Direct path to Agent index.js entry script. Use with Node Binary Path for manual override"
+    },
+    "defaultTimeoutSec": {
+      "label": "Default Timeout (sec)",
+      "help": "Maximum execution time per invocation"
+    },
+    "projects": {
+      "label": "Project Mapping",
+      "help": "Project name to local path mapping"
+    },
+    "maxConcurrent": {
+      "label": "Max Concurrent",
+      "help": "Maximum concurrent Cursor CLI processes"
+    },
+    "enableAgentTool": {
+      "label": "Enable Agent Tool",
+      "help": "Register cursor_agent tool for PI Agent auto-invocation in conversations. Must be enabled in tools.allow"
+    }
+  }
+}

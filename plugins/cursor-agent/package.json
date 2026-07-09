@@ -1,0 +1,67 @@
+{
+  "name": "openclaw-cursor-agent",
+  "version": "0.2.0",
+  "description": "OpenClaw plugin that invokes the local Cursor Agent CLI from chat (/cursor) with project mapping, MCP, and optional agent tool fallback.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "keywords": [
+    "openclaw",
+    "openclaw-plugin",
+    "cursor",
+    "cursor-agent",
+    "cli",
+    "coding-agent"
+  ],
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "files": [
+    "dist/index.js",
+    "openclaw.plugin.json",
+    "README.md",
+    "README_CN.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "sync-version": "node --input-type=commonjs -e \"const fs=require('fs');const p=require('./package.json');const o=JSON.parse(fs.readFileSync('./openclaw.plugin.json','utf8'));o.version=p.version;fs.writeFileSync('./openclaw.plugin.json',JSON.stringify(o,null,2)+'\\n')\"",
+    "build": "npm run sync-version && esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --external:openclaw",
+    "dev": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --external:openclaw --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "pack:check": "npm run build && npm pack --dry-run",
+    "smoke:live": "node scripts/smoke-live.mjs",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
+  },
+  "openclaw": {
+    "extensions": [
+      "./dist/index.js"
+    ],
+    "compat": {
+      "pluginApi": ">=2026.3.2",
+      "minGatewayVersion": "2026.3.2"
+    },
+    "build": {
+      "openclawVersion": "2026.6.11",
+      "pluginSdkVersion": "2026.6.11"
+    },
+    "install": {
+      "npmSpec": "openclaw-cursor-agent",
+      "minHostVersion": ">=2026.3.2"
+    }
+  },
+  "peerDependencies": {
+    "openclaw": ">=2026.3.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.2",
+    "esbuild": "^0.24.0",
+    "openclaw": "^2026.3.8",
+    "typescript": "^5.7.0",
+    "vitest": "^4.0.18"
+  }
+}

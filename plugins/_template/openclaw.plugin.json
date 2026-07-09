@@ -1,0 +1,11 @@
+{
+  "id": "my-plugin",
+  "name": "My Plugin",
+  "description": "Replace with your plugin description",
+  "version": "0.1.0",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}
