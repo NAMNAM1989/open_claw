@@ -65,12 +65,24 @@ Tài liệu: [Building plugins](https://docs.openclaw.ai/plugins/building-plugin
 - Version: **0.2.0** (`openclaw-cursor-agent`)
 - Tests: 123 passed · typecheck OK · live smoke OK
 - Tarball: `plugins/cursor-agent/openclaw-cursor-agent-0.2.0.tgz`
-- Publish: `npm login` rồi `npm publish --access public` (hoặc ClawHub)
+- Git: commit `51ac74c` trên `main` (chưa có remote)
+
+### Publish còn lại (cần đăng nhập browser — 1 lệnh)
+
+Máy hiện **chưa** `npm login` / `clawhub login` / `gh auth login`. Chạy:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File C:\Project\open_claw\tools\finish-publish.ps1
+```
+
+Script sẽ: login npm → login ClawHub → tạo/push GitHub repo → `npm publish` + `clawhub package publish`.
+
+Chi tiết: [`plugins/cursor-agent/PUBLISH.md`](plugins/cursor-agent/PUBLISH.md)
 
 ## Lộ trình gợi ý
 
-1. ~~Hoàn thiện `cursor-agent`~~ → sẵn sàng publish
-2. `npm publish` / ClawHub (cần đăng nhập npm)
+1. ~~Hoàn thiện `cursor-agent`~~
+2. Chạy `tools/finish-publish.ps1` (login + publish)
 3. Skill cho workflow `telegram_bot` (nếu cần)
 4. Plugin mới khi có nhu cầu runtime (tool/channel/provider)
 
