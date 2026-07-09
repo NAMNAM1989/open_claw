@@ -1,7 +1,8 @@
-# Finish remaining interactive publish steps:
-# 1) npm login  2) clawhub login  3) gh auth login + create/push repo  4) publish
+# OPTIONAL: full public publish (npm + ClawHub + GitHub).
+# Not required for local plugin development.
+# Prefer local load path; see README.md and plugins/cursor-agent/PUBLISH.md.
 #
-# Run in a normal PowerShell (with browser):
+# Run in a normal PowerShell (with browser) only when you want to ship publicly:
 #   powershell -ExecutionPolicy Bypass -File C:\Project\open_claw\tools\finish-publish.ps1
 
 $ErrorActionPreference = "Stop"

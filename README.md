@@ -2,6 +2,18 @@
 
 Workspace phát triển **plugin / skill** cho [OpenClaw](https://github.com/openclaw/openclaw), không fork core.
 
+## Cần đăng nhập gì?
+
+**Không cần.** Plugin đã chạy local qua Gateway; npm / ClawHub / GitHub chỉ khi muốn **phát hành công khai**.
+
+| Mục tiêu | Cần login? |
+|----------|------------|
+| Sửa code, `npm test` / `npm run build`, dùng `/cursor` trên máy | **Không** |
+| Người khác cài qua npm | Chỉ `npm login` |
+| List trên ClawHub | Thêm `clawhub login` + repo GitHub |
+
+Đừng chạy `tools/finish-publish.ps1` / `tools/login-all.ps1` trừ khi bạn chủ động muốn publish.
+
 ## Cấu trúc
 
 ```
@@ -17,21 +29,23 @@ open_claw/
 
 Gọi Cursor Agent CLI từ chat OpenClaw (`/cursor`).
 
+### Dev loop (local — 0 login)
+
 ```powershell
 cd plugins\cursor-agent
-npm ci
+npm ci                 # lần đầu
 npm run build
 npm test
-npm run dev          # watch rebuild
+openclaw gateway restart
 ```
 
-Gateway đang load plugin từ:
+Gateway load plugin từ:
 
 `C:\Project\open_claw\plugins\cursor-agent`
 
-(đã cập nhật `plugins.load.paths` trong `~/.openclaw/openclaw.json`)
+(`plugins.load.paths` trong `~/.openclaw/openclaw.json`)
 
-Sau khi sửa code: `npm run build` rồi `openclaw gateway restart`.
+`npm run dev` nếu muốn watch rebuild.
 
 ### Project mapping
 
@@ -64,27 +78,15 @@ Tài liệu: [Building plugins](https://docs.openclaw.ai/plugins/building-plugin
 
 - Version: **0.2.0** (`openclaw-cursor-agent`)
 - Tests: 123 passed · typecheck OK · live smoke OK
-- Tarball: `plugins/cursor-agent/openclaw-cursor-agent-0.2.0.tgz`
-- Git: commit `51ac74c` trên `main` (chưa có remote)
-
-### Publish còn lại (cần đăng nhập browser — 1 lệnh)
-
-Máy hiện **chưa** `npm login` / `clawhub login` / `gh auth login`. Chạy:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File C:\Project\open_claw\tools\finish-publish.ps1
-```
-
-Script sẽ: login npm → login ClawHub → tạo/push GitHub repo → `npm publish` + `clawhub package publish`.
-
-Chi tiết: [`plugins/cursor-agent/PUBLISH.md`](plugins/cursor-agent/PUBLISH.md)
+- Đang dùng: **local load path** (không cần publish)
+- Publish (tùy chọn): xem [`plugins/cursor-agent/PUBLISH.md`](plugins/cursor-agent/PUBLISH.md)
 
 ## Lộ trình gợi ý
 
-1. ~~Hoàn thiện `cursor-agent`~~
-2. Chạy `tools/finish-publish.ps1` (login + publish)
-3. Skill cho workflow `telegram_bot` (nếu cần)
-4. Plugin mới khi có nhu cầu runtime (tool/channel/provider)
+1. ~~Hoàn thiện `cursor-agent`~~ — dùng local
+2. Tiếp tục phát triển plugin / skill theo nhu cầu
+3. Publish npm/ClawHub **chỉ khi** muốn chia sẻ công khai
+4. Plugin mới từ `plugins/_template` khi cần
 
 ## Lưu ý
 
