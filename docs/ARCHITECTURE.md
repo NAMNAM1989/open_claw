@@ -1,6 +1,8 @@
 # Kiến trúc kỹ thuật — open_claw
 
-Bổ sung chi tiết cho [PLATFORM.md](./PLATFORM.md): luồng dữ liệu, hợp đồng API, module, giám sát.
+> **Cập nhật:** production chỉ `openclaw-gateway`. Phần Telegram bot trong tài liệu cũ đã gỡ khỏi monorepo.
+
+Bổ sung chi tiết cho [PLATFORM.md](./PLATFORM.md).
 
 ---
 

@@ -34,7 +34,8 @@ powershell -File tools\smoke-gateway.ps1
 | `GET /health` | **OK** | `{"ok":true}` |
 | `GET /v1/models` + Bearer | **OK** | `openclaw/default` |
 | `openclaw config validate` | **OK** | sau sửa template |
-| `telegram-bot` pytest | **28 passed** | greenfield trong monorepo |
+| `check-platform.ps1` | scaffold gateway + plugin | **PASS** |
+| `cursor-agent` npm test | plugin local | **PASS** |
 | Supabase migration live | **Chưa chạy** | cần SQL Editor / `supabase db push` |
 | Gemini chat thật | **Chưa** | cần `GEMINI_API_KEY` hợp lệ trên Railway |
 

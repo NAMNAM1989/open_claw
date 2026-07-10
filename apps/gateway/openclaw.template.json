@@ -1,16 +1,16 @@
 {
   "agents": {
     "defaults": {
-      "model": { "primary": "google/gemini-2.5-flash" },
-      "workspace": "/app/workspace/telegram-bot",
+      "model": { "primary": "google/gemini-3.5-flash" },
+      "workspace": "/app/workspace",
       "compaction": { "mode": "safeguard" },
       "memorySearch": { "enabled": false }
     },
     "list": [
       {
         "id": "default",
-        "workspace": "/app/workspace/telegram-bot",
-        "model": { "primary": "google/gemini-2.5-flash" }
+        "workspace": "/app/workspace",
+        "model": { "primary": "google/gemini-3.5-flash" }
       }
     ]
   },

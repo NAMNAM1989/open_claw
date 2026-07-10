@@ -7,10 +7,9 @@ RUN apt-get update \
 
 WORKDIR /app
 
-RUN mkdir -p /app/workspace/telegram-bot /root/.openclaw
+RUN mkdir -p /app/workspace /root/.openclaw
 
-# Persona agent (sync từ apps/telegram-bot/workspace khi đổi IDENTITY/SOUL)
-COPY workspace /app/workspace/telegram-bot
+COPY workspace /app/workspace
 
 COPY openclaw.template.json /app/openclaw.template.json
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh

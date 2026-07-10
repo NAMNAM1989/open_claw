@@ -1,8 +1,8 @@
 # open_claw — Nền tảng NamNam Ops
 
-Monorepo cho **OpenClaw Gateway**, bot Telegram eCargo, plugin, Supabase — project thống nhất trên **GitHub · Railway · Supabase** (tên `open_claw`).
+Monorepo cho **OpenClaw Gateway**, plugin, Supabase — project **open_claw** trên GitHub · Railway · Supabase.
 
-**Production Railway:** chỉ `openclaw-gateway`. Bot `apps/telegram-bot` = dev local / CI pytest.
+**Production Railway:** chỉ `openclaw-gateway` (Gemini `google/gemini-3.5-flash`).
 
 **Thiết kế đầy đủ:** [docs/PLATFORM.md](docs/PLATFORM.md)
 
@@ -25,13 +25,12 @@ Workspace phát triển **plugin / skill** cho [OpenClaw](https://github.com/ope
 ```
 open_claw/
 ├── apps/
-│   ├── gateway/          # OpenClaw Gateway (Railway service)
-│   └── telegram-bot/     # Bot NamNam Ops (greenfield)
+│   └── gateway/          # OpenClaw Gateway (Railway)
 ├── plugins/
 │   ├── cursor-agent/     # Plugin dev local
 │   └── _template/
-├── supabase/migrations/  # Schema Postgres
-├── docs/PLATFORM.md      # Kiến trúc Railway + Supabase + Gemini
+├── supabase/migrations/
+├── docs/PLATFORM.md
 └── README.md
 ```
 
@@ -61,7 +60,6 @@ Gateway load plugin từ:
 
 | Alias         | Path                            |
 |---------------|---------------------------------|
-| `telegram-bot`| `C:\Project\open_claw\apps\telegram-bot` |
 | `open-claw`   | `C:\Project\open_claw`          |
 
 Ví dụ:
@@ -113,6 +111,6 @@ Tài liệu: [Building plugins](https://docs.openclaw.ai/plugins/building-plugin
 
 ## Lưu ý
 
-- Runtime OpenClaw vẫn là bản npm global (`openclaw@2026.6.11`).
-- Bot logistics: `apps/telegram-bot` (một project duy nhất, không dùng bot cũ).
-- Không commit secrets / `.env`.
+- Runtime OpenClaw: npm global (`openclaw@latest` trong Docker gateway).
+- Project cũ `telegram_bot` / `apps/telegram-bot` đã gỡ — chỉ còn gateway.
+- Không commit secrets / `.env.secrets`.

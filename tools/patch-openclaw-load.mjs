@@ -14,7 +14,6 @@ if (raw[0] === 0xef && raw[1] === 0xbb && raw[2] === 0xbf) {
 const j = JSON.parse(raw.toString("utf8"));
 j.plugins.load.paths = ["C:\\Project\\open_claw\\plugins\\cursor-agent"];
 j.plugins.entries["cursor-agent"].config.projects = {
-  "telegram-bot": "C:\\Project\\open_claw\\apps\\telegram-bot",
   "open-claw": "C:\\Project\\open_claw",
 };
 fs.writeFileSync(path, JSON.stringify(j, null, 2) + "\n", "utf8");

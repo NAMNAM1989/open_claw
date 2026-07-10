@@ -3,11 +3,6 @@
 #   1. Copy .env.example -> .env.secrets (gitignored)
 #   2. Fill: GEMINI_API_KEY, OPENCLAW_GATEWAY_TOKEN
 #   3. powershell -File tools\set-railway-secrets.ps1
-# Optional: -IncludeTelegramBot when telegram-bot service exists on Railway
-
-param(
-    [switch]$IncludeTelegramBot
-)
 
 $ErrorActionPreference = "Stop"
 $root = Split-Path $PSScriptRoot -Parent
@@ -62,23 +57,6 @@ try {
         --environment production `
         --json | Out-Null
     railway service redeploy --service openclaw-gateway --environment production --yes 2>&1 | Out-Null
-
-    if ($IncludeTelegramBot) {
-        $botRequired = @("TELEGRAM_BOT_TOKEN", "SUPABASE_SERVICE_ROLE_KEY")
-        $missing = $botRequired | Where-Object { -not $envMap[$_] }
-        if ($missing.Count) {
-            Write-Host "Missing keys for telegram-bot: $($missing -join ', ')"
-            exit 1
-        }
-        Write-Host "Setting telegram-bot (TELEGRAM + SUPABASE_SERVICE_ROLE_KEY)..."
-        railway variable set `
-            "TELEGRAM_BOT_TOKEN=$($envMap['TELEGRAM_BOT_TOKEN'])" `
-            "SUPABASE_SERVICE_ROLE_KEY=$($envMap['SUPABASE_SERVICE_ROLE_KEY'])" `
-            --service telegram-bot `
-            --environment production `
-            --json | Out-Null
-        railway service redeploy --service telegram-bot --environment production --yes 2>&1 | Out-Null
-    }
 
     Write-Host "Done. Check: railway service status --json"
 } finally {

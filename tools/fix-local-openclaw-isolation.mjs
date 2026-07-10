@@ -1,24 +1,33 @@
 import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const path = `${process.env.USERPROFILE || process.env.HOME}/.openclaw/openclaw.json`;
-if (!fs.existsSync(path)) {
-  console.error("Khong tim thay", path);
+const configPath = path.join(
+  process.env.USERPROFILE || process.env.HOME || "",
+  ".openclaw",
+  "openclaw.json",
+);
+if (!fs.existsSync(configPath)) {
+  console.error("Khong tim thay", configPath);
   process.exit(1);
 }
 
-const BOT_ROOT = "C:\\Project\\open_claw\\apps\\telegram-bot";
-const MONO_ROOT = "C:\\Project\\open_claw";
+const monoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const workspace = path.join(monoRoot, "apps", "gateway", "workspace");
 const OLD_BOT = "C:\\Project\\telegram_bot";
 
-let raw = fs.readFileSync(path);
+let raw = fs.readFileSync(configPath);
 if (raw[0] === 0xef) raw = raw.subarray(3);
 const j = JSON.parse(raw.toString("utf8"));
 
-fs.copyFileSync(path, `${path}.bak-isolation-${Date.now()}`);
+fs.copyFileSync(configPath, `${configPath}.bak-isolation-${Date.now()}`);
 
 function fixWorkspace(ws) {
   if (typeof ws !== "string") return ws;
-  if (ws.replace(/\//g, "\\") === OLD_BOT.replace(/\//g, "\\")) return BOT_ROOT;
+  const norm = ws.replace(/\//g, "\\");
+  if (norm === OLD_BOT.replace(/\//g, "\\") || norm.includes("telegram-bot")) {
+    return workspace;
+  }
   return ws;
 }
 
@@ -36,7 +45,7 @@ if (j.channels?.telegram) {
 }
 
 if (!j.plugins) j.plugins = {};
-j.plugins.load = { paths: [`${MONO_ROOT}\\plugins\\cursor-agent`] };
+j.plugins.load = { paths: [path.join(monoRoot, "plugins", "cursor-agent")] };
 if (!j.plugins.entries) j.plugins.entries = {};
 const existing = j.plugins.entries["cursor-agent"]?.config ?? {};
 j.plugins.entries["cursor-agent"] = {
@@ -44,13 +53,12 @@ j.plugins.entries["cursor-agent"] = {
   config: {
     ...existing,
     projects: {
-      "telegram-bot": BOT_ROOT,
-      "open-claw": MONO_ROOT,
+      "open-claw": monoRoot,
     },
   },
 };
 
-fs.writeFileSync(path, JSON.stringify(j, null, 2) + "\n", "utf8");
+fs.writeFileSync(configPath, JSON.stringify(j, null, 2) + "\n", "utf8");
 console.log(
   JSON.stringify(
     {

@@ -4,7 +4,7 @@
 
 Nền tảng **NamNam Ops**: Railway (gateway), Supabase, Gemini, GitHub CI.
 
-- **Production 24/7:** Railway project `open_claw` — service `openclaw-gateway` (bot code ở `apps/telegram-bot`, chưa deploy Railway)
+- **Production 24/7:** Railway project `open_claw` — service `openclaw-gateway`
 - **Docs:** `docs/PLATFORM.md` · `docs/MODELS.md` (Gemini only)
 
 ## Layout
@@ -12,7 +12,6 @@ Nền tảng **NamNam Ops**: Railway (gateway), Supabase, Gemini, GitHub CI.
 ```
 apps/
   gateway/           OpenClaw + Gemini (Railway)
-  telegram-bot/      Bot NamNam Ops (greenfield, độc lập)
 plugins/
   cursor-agent/      Dev local only
 supabase/migrations/
@@ -45,5 +44,3 @@ Không commit `.env`. Xem `.env.example` ở repo root.
 | Service | Root |
 |---------|------|
 | `openclaw-gateway` | `apps/gateway` |
-
-`apps/telegram-bot` — dev/CI local; thêm lại service Railway khi cần bot Telegram.

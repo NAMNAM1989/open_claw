@@ -46,29 +46,12 @@ Get-ChildItem (Join-Path $root ".github\workflows\*.yml") -ErrorAction SilentlyC
 
 $json = Get-Content $tpl -Raw | ConvertFrom-Json
 Ok "telegram channel disabled" ($json.channels.telegram.enabled -eq $false)
-Ok "primary model Gemini" ($json.agents.defaults.model.primary -eq "google/gemini-2.5-flash")
+Ok "primary model Gemini" ($json.agents.defaults.model.primary -eq "google/gemini-3.5-flash")
 Ok "plugin google enabled" ($json.plugins.entries.google.enabled -eq $true)
 $openaiOff = -not $json.plugins.entries.openai -or $json.plugins.entries.openai.enabled -eq $false
 $deepseekOff = -not $json.plugins.entries.deepseek -or $json.plugins.entries.deepseek.enabled -eq $false
 Ok "openai disabled" $openaiOff
 Ok "deepseek disabled" $deepseekOff
-
-$botMigrated = Test-Path (Join-Path $root "apps\telegram-bot\requirements.txt")
-if ($botMigrated) {
-    Ok "telegram-bot present" $true
-    $pytest = Join-Path $root "apps\telegram-bot"
-    Push-Location $pytest
-    try {
-        python -m pytest tests/ -q --tb=no 2>$null
-        Ok "telegram-bot pytest" ($LASTEXITCODE -eq 0)
-    } catch {
-        Ok "telegram-bot pytest" $false "python/pytest unavailable"
-    } finally {
-        Pop-Location
-    }
-} else {
-    Write-Host "  [WARN] apps/telegram-bot chua co requirements.txt"
-}
 
 Write-Host ""
 if ($fail -eq 0) {

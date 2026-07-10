@@ -27,7 +27,6 @@ j.plugins.entries["cursor-agent"] = {
   enabled: true,
   config: {
     projects: {
-      "telegram-bot": path.join(monoRoot, "apps", "telegram-bot"),
       "open-claw": monoRoot,
     },
     agentPath: agentCmd,
