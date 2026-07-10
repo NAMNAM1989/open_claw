@@ -1,7 +1,7 @@
 # Supabase local / CLI — project open_claw
 # https://supabase.com/docs/guides/cli/config
 
-project_id = "open_claw"
+project_id = "ikcavxwchowbgrkhfxra"
 
 [api]
 enabled = true
