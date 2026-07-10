@@ -1,0 +1,46 @@
+{
+  "agents": {
+    "defaults": {
+      "model": { "primary": "google/gemini-2.5-flash" },
+      "workspace": "/app/workspace/telegram-bot",
+      "compaction": { "mode": "safeguard" },
+      "memorySearch": { "enabled": false }
+    },
+    "list": [
+      {
+        "id": "default",
+        "workspace": "/app/workspace/telegram-bot",
+        "model": { "primary": "google/gemini-2.5-flash" }
+      }
+    ]
+  },
+  "channels": {
+    "telegram": { "enabled": false }
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "lan",
+    "auth": {
+      "mode": "token",
+      "token": "REPLACE_GATEWAY_TOKEN"
+    },
+    "http": {
+      "endpoints": {
+        "chatCompletions": { "enabled": true },
+        "responses": { "enabled": true }
+      }
+    }
+  },
+  "plugins": {
+    "entries": {
+      "google": { "enabled": true },
+      "active-memory": { "enabled": true },
+      "memory-wiki": { "enabled": true },
+      "document-extract": { "enabled": true },
+      "cursor-agent": { "enabled": false },
+      "openai": { "enabled": false },
+      "deepseek": { "enabled": false }
+    }
+  }
+}

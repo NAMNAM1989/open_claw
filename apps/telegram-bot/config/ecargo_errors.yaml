@@ -1,0 +1,27 @@
+session_expired:
+  match:
+    - "chưa đăng nhập"
+    - "save_ecargo_session"
+    - "account/login"
+    - "session expired"
+  user_message: |
+    🔐 Session eCargo hết hạn.
+    Chạy trên máy dev:
+    `python scripts/save_ecargo_session.py`
+    Rồi upload `data/ecargo_storage.json` lên Railway Volume.
+
+arrival_too_soon:
+  match:
+    - "thời gian hàng vào"
+    - "arrival"
+  user_message: "⏰ Thời gian hàng vào không hợp lệ — kiểm tra cut-off chuyến bay."
+
+mawb_invalid:
+  match:
+    - "mawb"
+    - "vận đơn"
+  user_message: "📄 MAWB không hợp lệ trên eCargo — kiểm tra lại số vận đơn."
+
+generic:
+  match: []
+  user_message: "❌ Lỗi eCargo — xem log ops hoặc thử lại."

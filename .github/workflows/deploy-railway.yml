@@ -1,0 +1,35 @@
+name: Deploy Railway
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy-gateway:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Railway CLI
+        run: npm i -g @railway/cli
+      - name: Deploy openclaw-gateway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        working-directory: apps/gateway
+        run: |
+          railway link ${{ secrets.RAILWAY_PROJECT_ID }} --service openclaw-gateway
+          railway up --detach
+
+  deploy-telegram-bot:
+    needs: deploy-gateway
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Railway CLI
+        run: npm i -g @railway/cli
+      - name: Deploy telegram-bot
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        working-directory: apps/telegram-bot
+        run: |
+          railway link ${{ secrets.RAILWAY_PROJECT_ID }} --service telegram-bot
+          railway up --detach

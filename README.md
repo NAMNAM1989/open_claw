@@ -1,4 +1,8 @@
-# OpenClaw — Plugin-first workspace
+# open_claw — Nền tảng NamNam Ops
+
+Monorepo cho **OpenClaw Gateway**, bot Telegram eCargo, plugin, Supabase — project thống nhất trên **GitHub · Railway · Supabase** (tên `open_claw`).
+
+**Thiết kế đầy đủ:** [docs/PLATFORM.md](docs/PLATFORM.md)
 
 Workspace phát triển **plugin / skill** cho [OpenClaw](https://github.com/openclaw/openclaw), không fork core.
 
@@ -18,10 +22,14 @@ Workspace phát triển **plugin / skill** cho [OpenClaw](https://github.com/ope
 
 ```
 open_claw/
+├── apps/
+│   ├── gateway/          # OpenClaw Gateway (Railway service)
+│   └── telegram-bot/     # Bot NamNam Ops (greenfield)
 ├── plugins/
-│   ├── cursor-agent/     # Plugin chính (đang phát triển)
-│   └── _template/        # Scaffold plugin mới
-├── skills/               # (tuỳ chọn) skill ClawHub / bundle
+│   ├── cursor-agent/     # Plugin dev local
+│   └── _template/
+├── supabase/migrations/  # Schema Postgres
+├── docs/PLATFORM.md      # Kiến trúc Railway + Supabase + Gemini
 └── README.md
 ```
 
@@ -49,10 +57,10 @@ Gateway load plugin từ:
 
 ### Project mapping
 
-| Alias         | Path                      |
-|---------------|---------------------------|
-| `telegram-bot`| `C:\Project\telegram_bot` |
-| `open-claw`   | `C:\Project\open_claw`    |
+| Alias         | Path                            |
+|---------------|---------------------------------|
+| `telegram-bot`| `C:\Project\open_claw\apps\telegram-bot` |
+| `open-claw`   | `C:\Project\open_claw`          |
 
 Ví dụ:
 
@@ -81,6 +89,19 @@ Tài liệu: [Building plugins](https://docs.openclaw.ai/plugins/building-plugin
 - Đang dùng: **local load path** (không cần publish)
 - Publish (tùy chọn): xem [`plugins/cursor-agent/PUBLISH.md`](plugins/cursor-agent/PUBLISH.md)
 
+## Tài liệu thiết kế
+
+| File | Mô tả |
+|------|--------|
+| [docs/PLATFORM.md](docs/PLATFORM.md) | Tổng quan Railway + Supabase + Gemini |
+| [docs/MODELS.md](docs/MODELS.md) | **LLM = Gemini only** (thiết kế chốt) |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Luồng kỹ thuật, API, module |
+| [docs/DATA.md](docs/DATA.md) | Schema Supabase |
+| [docs/QUOTE_ENGINE.md](docs/QUOTE_ENGINE.md) | Báo giá / chứng từ |
+| [docs/RUNBOOK.md](docs/RUNBOOK.md) | Vận hành |
+| [docs/DEPLOY.md](docs/DEPLOY.md) | **Checklist deploy Railway + Supabase** |
+| [docs/PLUGIN_ROADMAP.md](docs/PLUGIN_ROADMAP.md) | Plugin roadmap |
+
 ## Lộ trình gợi ý
 
 1. ~~Hoàn thiện `cursor-agent`~~ — dùng local
@@ -91,5 +112,5 @@ Tài liệu: [Building plugins](https://docs.openclaw.ai/plugins/building-plugin
 ## Lưu ý
 
 - Runtime OpenClaw vẫn là bản npm global (`openclaw@2026.6.11`).
-- Agent workspace mặc định vẫn là `C:\Project\telegram_bot`.
+- Bot logistics: `apps/telegram-bot` (một project duy nhất, không dùng bot cũ).
 - Không commit secrets / `.env`.

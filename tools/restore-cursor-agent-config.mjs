@@ -18,7 +18,7 @@ j.plugins.entries["cursor-agent"] = {
   enabled: true,
   config: {
     projects: {
-      "telegram-bot": "C:\\Project\\telegram_bot",
+      "telegram-bot": "C:\\Project\\open_claw\\apps\\telegram-bot",
       "open-claw": "C:\\Project\\open_claw",
     },
     agentPath: "C:\\Users\\namna\\AppData\\Local\\cursor-agent\\agent.CMD",

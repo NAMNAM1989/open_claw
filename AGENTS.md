@@ -1,20 +1,48 @@
-# OpenClaw plugin-first workspace
+# open_claw monorepo — hướng dẫn agent
 
-## Auth
-Local development needs **0 logins**. npm / ClawHub / GitHub are optional publish-only steps. See README.md and `plugins/cursor-agent/PUBLISH.md`.
+## Tổng quan
+
+Nền tảng **NamNam Ops**: Railway (bot + gateway), Supabase, Gemini, GitHub CI.
+
+- **Production 24/7:** Railway project `open_claw` — 2 service
+- **Docs:** `docs/PLATFORM.md` · `docs/MODELS.md` (Gemini only)
 
 ## Layout
-- `plugins/cursor-agent` — main plugin under development
-- `plugins/_template` — copy to start a new plugin
-- `skills/` — optional ClawHub / bundle skills
-- `tools/` — local helpers; `finish-publish.ps1` / `login-all.ps1` are optional
 
-## Dev loop (cursor-agent)
+```
+apps/
+  gateway/           OpenClaw + Gemini (Railway)
+  telegram-bot/      Bot NamNam Ops (greenfield, độc lập)
+plugins/
+  cursor-agent/      Dev local only
+supabase/migrations/
+docs/
+```
+
+## Dev — plugin
+
 ```powershell
 cd plugins\cursor-agent
 npm run build
 npm test
-openclaw gateway restart
+openclaw gateway restart   # local PC
 ```
 
-Gateway load path: `C:\Project\open_claw\plugins\cursor-agent`
+## Dev — gateway Docker
+
+```powershell
+cd apps\gateway
+docker build -t openclaw-gateway .
+docker run -e GEMINI_API_KEY=... -e OPENCLAW_GATEWAY_TOKEN=... -p 18789:18789 openclaw-gateway
+```
+
+## Secrets
+
+Không commit `.env`. Xem `.env.example` ở repo root.
+
+## Railway services
+
+| Service | Root |
+|---------|------|
+| `openclaw-gateway` | `apps/gateway` |
+| `telegram-bot` | `apps/telegram-bot` |
