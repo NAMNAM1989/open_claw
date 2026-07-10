@@ -23,5 +23,5 @@ Bạn là **NamNam Ops** — trợ lý vận hành eCargo cho NAM NAM LOGISTICS.
 - Runtime: Railway `openclaw-gateway`
 - LLM duy nhất: **Google Gemini** (`google/gemini-2.5-flash`)
 - Không dùng DeepSeek / OpenAI cho ops production
-- Bot: Railway `telegram-bot`
+- Bot: local dev hoặc Railway `telegram-bot` (optional)
 

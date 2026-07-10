@@ -41,7 +41,7 @@ Config nguồn sự thật: `apps/gateway/openclaw.template.json`
 ```env
 GEMINI_API_KEY=AIza...          # bắt buộc — Google AI Studio
 GOOGLE_API_KEY=AIza...          # cùng giá trị (alias OpenClaw)
-OPENCLAW_GATEWAY_TOKEN=...      # shared với telegram-bot
+OPENCLAW_GATEWAY_TOKEN=...      # shared với telegram-bot (khi có bot; hiện chỉ cần trên gateway)
 PORT=18789
 ```
 

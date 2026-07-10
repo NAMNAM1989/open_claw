@@ -2,6 +2,8 @@
 
 Monorepo cho **OpenClaw Gateway**, bot Telegram eCargo, plugin, Supabase — project thống nhất trên **GitHub · Railway · Supabase** (tên `open_claw`).
 
+**Production Railway:** chỉ `openclaw-gateway`. Bot `apps/telegram-bot` = dev local / CI pytest.
+
 **Thiết kế đầy đủ:** [docs/PLATFORM.md](docs/PLATFORM.md)
 
 Workspace phát triển **plugin / skill** cho [OpenClaw](https://github.com/openclaw/openclaw), không fork core.

@@ -13,6 +13,9 @@ cp "$TEMPLATE" /tmp/openclaw.runtime.json
 
 if [ -n "${OPENCLAW_GATEWAY_TOKEN:-}" ]; then
   sed -i "s|REPLACE_GATEWAY_TOKEN|${OPENCLAW_GATEWAY_TOKEN}|g" /tmp/openclaw.runtime.json
+else
+  echo "[entrypoint] ERROR: OPENCLAW_GATEWAY_TOKEN is required" >&2
+  exit 1
 fi
 
 export GEMINI_API_KEY="${GEMINI_API_KEY:-}"

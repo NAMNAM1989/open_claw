@@ -1,5 +1,7 @@
 # Runbook vận hành — open_claw
 
+> **Production Railway:** chỉ `openclaw-gateway`. Các mục bot áp dụng khi chạy local hoặc deploy lại service `telegram-bot`.
+
 Hướng dẫn hàng ngày sau khi deploy Railway + Supabase.
 
 ---
@@ -8,8 +10,8 @@ Hướng dẫn hàng ngày sau khi deploy Railway + Supabase.
 
 | Cần xem | Nơi |
 |---------|-----|
-| Log bot | Railway → `telegram-bot` → Deployments → Logs |
-| Log Gateway | Railway → `openclaw-gateway` → Logs |
+| Log Gateway (production) | Railway → `openclaw-gateway` → Deployments → Logs |
+| Log bot (local / optional) | Terminal `python -m bot.main` hoặc Railway `telegram-bot` nếu bật lại |
 | DB / SQL | Supabase Dashboard → SQL Editor |
 | Gemini quota | [Google AI Studio](https://aistudio.google.com) |
 | Code | GitHub → `open_claw` |
@@ -24,12 +26,11 @@ Hướng dẫn hàng ngày sau khi deploy Railway + Supabase.
 cd C:\Project\open_claw
 git push origin main
 
-# Railway CLI (nếu cần)
-npx @railway/cli redeploy --service openclaw-gateway
-npx @railway/cli redeploy --service telegram-bot
+# Railway CLI (gateway)
+npx @railway/cli redeploy --service openclaw-gateway --environment production
 ```
 
-**Thứ tự an toàn:** gateway trước (nếu đổi openclaw.json) → bot sau.
+**Thứ tự an toàn:** gateway trước. Bot (nếu có service Railway) sau.
 
 ---
 
@@ -55,7 +56,7 @@ Upload `data/ecargo_storage.json` lên Railway Volume `telegram-bot`.
 |------|------|
 | 1 | Railway → `openclaw-gateway` → Logs — crash? |
 | 2 | Kiểm tra `GEMINI_API_KEY` / `GOOGLE_API_KEY` còn hiệu lực (Google AI Studio) |
-| 3 | Kiểm tra `OPENCLAW_GATEWAY_TOKEN` khớp giữa 2 service |
+| 3 | Kiểm tra `OPENCLAW_GATEWAY_TOKEN` đã set trên gateway (và bot nếu có) |
 | 4 | Redeploy gateway — **không** đổi sang DeepSeek/OpenAI |
 | 5 | Xem [MODELS.md](./MODELS.md) — stack LLM chỉ Gemini |
 

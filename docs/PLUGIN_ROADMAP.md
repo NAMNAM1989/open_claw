@@ -65,7 +65,7 @@ Copy-Item -Recurse plugins\_template plugins\namnam-supabase
 # Sửa openclaw.plugin.json, implement tools
 ```
 
-Thêm vào `apps/gateway/openclaw.json`:
+Thêm vào `apps/gateway/openclaw.template.json` (runtime: entrypoint ghi `~/.openclaw/openclaw.json`):
 
 ```json
 "plugins": {

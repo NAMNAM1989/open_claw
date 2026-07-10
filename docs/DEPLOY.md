@@ -26,7 +26,7 @@ powershell -File tools\check-isolation.ps1
 
 | Rui ro | Cach tranh |
 |--------|------------|
-| 2 bot cung `TELEGRAM_BOT_TOKEN` | Chi **mot** process poll Telegram: `apps/telegram-bot` tren Railway |
+| 2 bot cung `TELEGRAM_BOT_TOKEN` | Chi **mot** process poll Telegram (local hoac Railway khi bat lai bot) |
 | OpenClaw local + Railway cung token | Tat `channels.telegram` trong `~/.openclaw/openclaw.json` tren PC |
 | Gateway Railway bat Telegram channel | Template da `enabled: false` — khong bat them |
 | Token cu trong OpenClaw channel | Tao token **moi** BotFather cho Railway bot |
@@ -102,14 +102,17 @@ openclaw gateway restart
 
 ## 4. Railway — project `open_claw`
 
-Tạo **2 service** trong cùng project:
+**Hiện tại production chỉ chạy gateway** (service `telegram-bot` đã gỡ khỏi Railway; code bot vẫn ở `apps/telegram-bot` cho dev/CI).
 
 | Service | Root Directory | Public |
 |---------|----------------|--------|
 | `openclaw-gateway` | `apps/gateway` | **Không** |
-| `telegram-bot` | `apps/telegram-bot` | **Không** |
 
-Link GitHub repo → Railway auto-deploy (hoặc dùng workflow `deploy-railway.yml`).
+Project Railway cũ `telegram_bot` (repo `NAMNAM1989/telegram_bot`) — **đã xóa service**, có thể xóa project trống trên Dashboard.
+
+Deploy qua GitHub Actions (`deploy-railway.yml`) hoặc CLI `railway up` từ thư mục `apps/gateway` (Root Directory trên Railway **để trống**).
+
+**Không** bật GitHub auto-deploy trên Dashboard — dễ fail vì monorepo layout.
 
 ### 4.1 Sync workspace (nếu đổi persona)
 
@@ -146,7 +149,9 @@ curl -sS http://<internal>:18789/v1/models -H "Authorization: Bearer $TOKEN"
 
 ---
 
-## 6. Service `telegram-bot` — biến môi trường
+## 6. Service `telegram-bot` (tùy chọn — chưa deploy Railway)
+
+> Bỏ qua mục này nếu chỉ dùng gateway. Khi cần bot Telegram, tạo lại service `telegram-bot` trên Railway với root `apps/telegram-bot`.
 
 ### Bắt buộc
 
@@ -202,12 +207,11 @@ python scripts\save_ecargo_session.py
 ```
 1. supabase db push
 2. Deploy openclaw-gateway  → verify /v1/models
-3. Set OPENCLAW_GATEWAY_TOKEN trên CẢ HAI service
-4. Deploy telegram-bot
-5. Smoke test Telegram
+3. (Tùy chọn) Tạo service telegram-bot → set token + OPENCLAW_GATEWAY_TOKEN
+4. Smoke test Telegram (nếu có bot)
 ```
 
-**Rotate token:** đổi `OPENCLAW_GATEWAY_TOKEN` trên cả 2 service cùng lúc, redeploy cả hai.
+**Rotate token:** đổi `OPENCLAW_GATEWAY_TOKEN` trên gateway (và bot nếu có) cùng lúc, redeploy.
 
 ---
 
