@@ -6,3 +6,4 @@ httpx==0.28.1
 supabase==2.13.0
 pytest==8.3.5
 playwright>=1.52.0
+tzdata>=2024.1
