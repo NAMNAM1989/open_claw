@@ -18,6 +18,9 @@ write_config() {
     exit 1
   fi
   mv /tmp/openclaw.runtime.json "$CONFIG"
+  # Promote our template as last-known-good so OpenClaw won't restore an old backup
+  cp "$CONFIG" /root/.openclaw/openclaw.json.last-good 2>/dev/null || true
+  cp "$CONFIG" /root/.openclaw/openclaw.json.bak 2>/dev/null || true
 }
 
 export GEMINI_API_KEY="${GEMINI_API_KEY:-}"
