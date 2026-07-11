@@ -1,8 +1,8 @@
 # open_claw — Nền tảng NamNam Ops
 
-Monorepo cho **OpenClaw Gateway**, plugin, Supabase — project **open_claw** trên GitHub · Railway · Supabase.
+Monorepo cho **OpenClaw Gateway**, **Telegram bot mới (v2)**, plugin — project **open_claw**.
 
-**Production Railway:** chỉ `openclaw-gateway` (Gemini `google/gemini-3.5-flash`).
+**Production Railway:** project `open_claw` — `openclaw-gateway` + `telegram-bot`.
 
 **Thiết kế đầy đủ:** [docs/PLATFORM.md](docs/PLATFORM.md)
 
@@ -25,9 +25,10 @@ Workspace phát triển **plugin / skill** cho [OpenClaw](https://github.com/ope
 ```
 open_claw/
 ├── apps/
-│   └── gateway/          # OpenClaw Gateway (Railway)
+│   ├── gateway/          # OpenClaw Gateway (Railway)
+│   └── telegram-bot/   # Bot Telegram mới → gateway
 ├── plugins/
-│   ├── cursor-agent/     # Plugin dev local
+│   ├── cursor-agent/
 │   └── _template/
 ├── supabase/migrations/
 ├── docs/PLATFORM.md
@@ -108,9 +109,3 @@ Tài liệu: [Building plugins](https://docs.openclaw.ai/plugins/building-plugin
 2. Tiếp tục phát triển plugin / skill theo nhu cầu
 3. Publish npm/ClawHub **chỉ khi** muốn chia sẻ công khai
 4. Plugin mới từ `plugins/_template` khi cần
-
-## Lưu ý
-
-- Runtime OpenClaw: npm global (`openclaw@latest` trong Docker gateway).
-- Project cũ `telegram_bot` / `apps/telegram-bot` đã gỡ — chỉ còn gateway.
-- Không commit secrets / `.env.secrets`.

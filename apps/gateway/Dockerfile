@@ -5,6 +5,15 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/* \
   && npm install -g openclaw@latest
 
+# DeepSeek plugin baked into image — volume mount /root/.openclaw wipes build-time installs
+RUN mkdir -p /app/vendor-plugins \
+  && cd /tmp \
+  && npm pack @openclaw/deepseek-provider \
+  && tar -xzf openclaw-deepseek-provider-*.tgz \
+  && mv package /app/vendor-plugins/deepseek-provider \
+  && rm -rf /tmp/openclaw-deepseek-provider-*.tgz \
+  && node -e "const fs=require('fs'); const p='/app/vendor-plugins/deepseek-provider/package.json'; const j=JSON.parse(fs.readFileSync(p,'utf8')); j.openclaw=j.openclaw||{}; j.openclaw.extensions=['./dist/index.js']; fs.writeFileSync(p, JSON.stringify(j,null,2));"
+
 WORKDIR /app
 
 RUN mkdir -p /app/workspace /root/.openclaw

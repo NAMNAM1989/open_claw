@@ -14,7 +14,6 @@ if (!fs.existsSync(configPath)) {
 
 const monoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const workspace = path.join(monoRoot, "apps", "gateway", "workspace");
-const OLD_BOT = "C:\\Project\\telegram_bot";
 
 let raw = fs.readFileSync(configPath);
 if (raw[0] === 0xef) raw = raw.subarray(3);
@@ -24,8 +23,9 @@ fs.copyFileSync(configPath, `${configPath}.bak-isolation-${Date.now()}`);
 
 function fixWorkspace(ws) {
   if (typeof ws !== "string") return ws;
-  const norm = ws.replace(/\//g, "\\");
-  if (norm === OLD_BOT.replace(/\//g, "\\") || norm.includes("telegram-bot")) {
+  const norm = ws.replace(/\//g, "\\").toLowerCase();
+  const openClaw = monoRoot.replace(/\//g, "\\").toLowerCase();
+  if (!norm.includes(openClaw) && norm.includes("telegram")) {
     return workspace;
   }
   return ws;

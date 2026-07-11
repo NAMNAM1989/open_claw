@@ -1,7 +1,5 @@
 # Kiến trúc kỹ thuật — open_claw
 
-> **Cập nhật:** production chỉ `openclaw-gateway`. Phần Telegram bot trong tài liệu cũ đã gỡ khỏi monorepo.
-
 Bổ sung chi tiết cho [PLATFORM.md](./PLATFORM.md).
 
 ---
@@ -137,9 +135,31 @@ Content-Type: application/json
 }
 ```
 
-### 5.2 Vision (multimodal — phase 4)
+### 5.2 Vision (multimodal)
 
-Mở rộng `AIClient.chat_vision()` — payload OpenAI-compatible với `image_url` base64 hoặc endpoint responses API của OpenClaw.
+Bot gửi ảnh Telegram qua `chat_vision()` — payload OpenAI-compatible:
+
+```http
+POST .../v1/chat/completions
+{
+  "model": "openclaw/default",
+  "user": "tg:-1001234567890",
+  "messages": [
+    { "role": "user", "content": "hi" },
+    { "role": "assistant", "content": "..." },
+    {
+      "role": "user",
+      "content": [
+        { "type": "text", "text": "đọc MAWB" },
+        { "type": "image_url", "image_url": { "url": "data:image/jpeg;base64,..." } }
+      ]
+    }
+  ],
+  "stream": false
+}
+```
+
+**Memory:** bot chỉ gửi tin hiện tại; OpenClaw session qua `user=tg:{chat_id}` (volume `/root/.openclaw`). `/clear` tăng epoch → `tg:{id}:{n}`. Không gửi lại rolling history (tránh nhân đôi token). Thinking tắt, `max_tokens≈400`.
 
 ### 5.3 Health probe
 
@@ -161,56 +181,34 @@ Bot startup (`session_health.check_openclaw_health`) — log + `ops_log` nếu f
 
 ---
 
-## 6. Module map — `apps/telegram-bot`
+## 6. Module map — `apps/telegram-bot` (v2)
 
 ```
 apps/telegram-bot/
 ├── bot/
-│   ├── main.py                 # entry
+│   ├── main.py
+│   ├── access.py
 │   └── handlers/
-│       ├── unified.py          # router chính
-│       ├── go.py               # eCargo job
-│       ├── image_reader.py     # /gia
-│       ├── scale_ticket.py     # /can
-│       └── quote.py            # NEW /bao_gia
+│       ├── system.py    # /ping, /start, /chatid
+│       └── chat.py      # /ask, /clear, text, photo → OpenClaw
 ├── core/
 │   ├── settings.py
-│   ├── ai_client.py            # router → OpenClaw
-│   ├── openclaw_client.py
-│   └── supabase_client.py      # NEW
-├── plugins/
-│   ├── vct_order/              # Playwright + mail
-│   ├── chat/                   # orchestrator
-│   ├── image_reader/
-│   │   ├── quote_engine.py     # NEW deterministic
-│   │   └── quote_parse.py      # NEW
-│   └── scale_ticket/
-└── workspace/                  # COPY cho gateway mount
-    ├── IDENTITY.md
-    ├── SOUL.md
-    ├── USER.md
-    └── TOOLS.md
+│   ├── chat_memory.py   # session epoch theo chat_id (/clear)
+│   └── openclaw_client.py
+└── tests/
 ```
+
+Không còn: Playwright eCargo, Supabase client, quote_engine, plugins ops cũ.
 
 ---
 
-## 7. Gateway workspace sync
+## 7. Gateway workspace
 
-OpenClaw agent đọc persona từ workspace. Trên Railway:
-
-**Cách A (khuyến nghị):** Dockerfile gateway `COPY` thư mục `workspace/` từ build context monorepo.
-
-```dockerfile
-COPY apps/telegram-bot/workspace /app/workspace/telegram-bot
-```
-
-**Cách B:** Shared Railway volume (phức tạp hơn) — không dùng giai đoạn đầu.
-
-Mỗi deploy bot → rebuild gateway nếu đổi IDENTITY/SOUL (hoặc CI build cả hai).
+Persona: `apps/gateway/workspace/` (`IDENTITY.md`, `SOUL.md`). Dockerfile `COPY workspace /app/workspace`.
 
 ---
 
-## 8. Supabase access pattern
+## 8. Supabase (tùy chọn — tích hợp sau)
 
 ```python
 # core/supabase_client.py — interface thiết kế

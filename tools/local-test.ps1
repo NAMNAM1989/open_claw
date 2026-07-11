@@ -31,6 +31,16 @@ Step "Platform scaffold" {
     if ($LASTEXITCODE -ne 0) { throw "check-platform exit $LASTEXITCODE" }
 }
 
+Step "telegram-bot pytest" {
+    Push-Location (Join-Path $root "apps\telegram-bot")
+    try {
+        python -m pytest tests/ -q
+        if ($LASTEXITCODE -ne 0) { throw "pytest exit $LASTEXITCODE" }
+    } finally {
+        Pop-Location
+    }
+}
+
 Step "cursor-agent npm test" {
     Push-Location (Join-Path $root "plugins\cursor-agent")
     try {
@@ -57,9 +67,9 @@ if ($fail -eq 0) {
     Write-Host "  TAT CA TEST TU DONG: PASS" -ForegroundColor Green
     Write-Host ""
     Write-Host "Buoc tiep:" -ForegroundColor White
-    Write-Host "  1. Copy .env.example -> .env.secrets; dien GEMINI + OPENCLAW_GATEWAY_TOKEN"
+    Write-Host "  1. Copy .env.example -> .env.secrets (GEMINI, OPENCLAW_GATEWAY_TOKEN, TELEGRAM_BOT_TOKEN)"
     Write-Host "  2. powershell -File tools\set-railway-secrets.ps1"
-    Write-Host "  3. powershell -File tools\smoke-gateway.ps1"
+    Write-Host "  3. Bot local: cd apps\telegram-bot; python -m bot.main"
     exit 0
 } else {
     Write-Host "  $fail MUC FAIL - xem log tren" -ForegroundColor Red

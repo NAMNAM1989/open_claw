@@ -2,45 +2,26 @@
 
 ## Tổng quan
 
-Nền tảng **NamNam Ops**: Railway (gateway), Supabase, Gemini, GitHub CI.
+Nền tảng **NamNam Ops**: Railway project `open_claw`, Gemini → ChatGPT → DeepSeek, GitHub CI.
 
-- **Production 24/7:** Railway project `open_claw` — service `openclaw-gateway`
-- **Docs:** `docs/PLATFORM.md` · `docs/MODELS.md` (Gemini only)
+- **Production:** `openclaw-gateway` + `telegram-bot`
+- **Docs:** `docs/PLATFORM.md` · `docs/MODELS.md`
 
 ## Layout
 
 ```
 apps/
-  gateway/           OpenClaw + Gemini (Railway)
+  gateway/           OpenClaw + Gemini/GPT/DeepSeek (Railway)
+  telegram-bot/      Bot Telegram → gateway
 plugins/
   cursor-agent/      Dev local only
-supabase/migrations/
+supabase/migrations/ # Tùy chọn
 docs/
 ```
 
-## Dev — plugin
+## Railway (project `open_claw`)
 
-```powershell
-cd plugins\cursor-agent
-npm run build
-npm test
-openclaw gateway restart   # local PC
-```
-
-## Dev — gateway Docker
-
-```powershell
-cd apps\gateway
-docker build -t openclaw-gateway .
-docker run -e GEMINI_API_KEY=... -e OPENCLAW_GATEWAY_TOKEN=... -p 18789:18789 openclaw-gateway
-```
-
-## Secrets
-
-Không commit `.env`. Xem `.env.example` ở repo root.
-
-## Railway services
-
-| Service | Root |
-|---------|------|
+| Service | Deploy từ |
+|---------|-----------|
 | `openclaw-gateway` | `apps/gateway` |
+| `telegram-bot` | `apps/telegram-bot` |

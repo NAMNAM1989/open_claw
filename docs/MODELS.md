@@ -1,37 +1,31 @@
-# Model AI — open_claw (Gemini only)
+# Model AI — open_claw
 
-**Quyết định thiết kế:** LLM của nền tảng NamNam Ops dùng **Google Gemini** qua OpenClaw Gateway.
-
-Không dùng DeepSeek / ChatGPT (OpenAI) cho production.
+**Chiến lược:** **Gemini** (chính) → **ChatGPT** → **DeepSeek** (fallback lần lượt khi lỗi/quota).
 
 ---
 
-## 1. Vai trò
+## 1. Luồng
 
 ```
-Client (HTTP / plugin / Cursor)
-    → openclaw-gateway       (OpenClaw HTTP /v1)
-        → Google Gemini API  (GEMINI_API_KEY)
+telegram-bot → openclaw-gateway
+                  ├─ google/gemini-3.5-flash     (primary)
+                  ├─ openai/gpt-4o-mini          (fallback 1)
+                  └─ deepseek/deepseek-v4-flash  (fallback 2)
 ```
 
-| Thành phần | Gọi LLM? | Provider |
-|------------|----------|----------|
-| `openclaw-gateway` | Có | **Gemini only** |
-| `cursor-agent` (local) | N/A | Dev tool |
+OpenClaw tự chuyển model khi provider báo `rate_limit` / lỗi.
 
 ---
 
 ## 2. Model routing
 
-| Tác vụ | Model | Ghi chú |
-|--------|-------|---------|
-| Chat, intent | `google/gemini-3.5-flash` | Primary mặc định |
-| Vision / extract | `google/gemini-3.5-flash` | Multimodal |
-| Task nặng (tuỳ chọn) | `google/gemini-2.5-pro` hoặc `google/gemini-3.5-flash` thinking=high | Đổi trên agent nếu cần |
+| Vai trò | Model | Ghi chú |
+|---------|-------|---------|
+| Chat chính | `google/gemini-3.5-flash` | Primary |
+| Fallback 1 | `openai/gpt-4o-mini` | ChatGPT (rẻ, nhanh) |
+| Fallback 2 | `deepseek/deepseek-v4-flash` | Khi Gemini + GPT đều lỗi |
 
 Config: `apps/gateway/openclaw.template.json`
-
-> `gemini-2.5-flash` không còn cho user API mới — đã migrate sang **3.5 Flash**.
 
 ---
 
@@ -39,12 +33,15 @@ Config: `apps/gateway/openclaw.template.json`
 
 ```env
 GEMINI_API_KEY=AIza...
-GOOGLE_API_KEY=AIza...          # cùng giá trị
+GOOGLE_API_KEY=AIza...          # cùng giá trị GEMINI
+OPENAI_API_KEY=sk-...           # ChatGPT fallback
+DEEPSEEK_API_KEY=sk-...         # fallback cuối
 OPENCLAW_GATEWAY_TOKEN=...
 PORT=18789
 ```
 
-**Không** set `OPENAI_API_KEY` / `DEEPSEEK_API_KEY` trên production.
+- OpenAI: [platform.openai.com](https://platform.openai.com)
+- DeepSeek: [platform.deepseek.com](https://platform.deepseek.com)
 
 ---
 
@@ -53,16 +50,35 @@ PORT=18789
 | Plugin | Production |
 |--------|------------|
 | `google` | **enabled** |
-| `active-memory`, `memory-wiki`, `document-extract` | enabled |
-| `openai`, `deepseek`, `cursor-agent` | **disabled** |
-| `channels.telegram` | **disabled** |
+| `openai` | **enabled** (ChatGPT fallback) |
+| `deepseek` | **enabled** (fallback cuối) |
+| `active-memory`, `memory-wiki`, `document-extract` | **disabled** (tiết kiệm token) |
+| `cursor-agent` | disabled |
+| `channels.telegram` | disabled |
+
+Token tiết kiệm: `thinkingDefault=off`, `maxTokens=250`, `heartbeat.every=0m`,
+`contextInjection=continuation-skip`, `bootstrapMaxChars=1200`, `imageMaxDimensionPx=512`.
+Bot chỉ gửi 1 tin hiện tại; ảnh dùng session `…:vision` tách biệt; `/baogia` `/pkl` không qua LLM.
+
+Dockerfile cài DeepSeek provider vào `/app/vendor-plugins` (volume-safe). OpenAI đăng ký qua `models.providers.openai`.
 
 ---
 
-## 5. Local PC
+## 5. Deploy sau khi thêm OpenAI
+
+```powershell
+# Thêm OPENAI_API_KEY (+ DEEPSEEK) vào .env.secrets
+powershell -File tools\set-railway-secrets.ps1 -SkipTelegramBot
+
+cd apps\gateway
+railway up . --path-as-root --service openclaw-gateway --environment production --detach
+```
+
+---
+
+## 6. Local PC
 
 ```powershell
 node tools\set-local-gemini.mjs
 openclaw gateway restart
-powershell -File tools\check-isolation.ps1
 ```

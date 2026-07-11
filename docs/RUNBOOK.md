@@ -1,58 +1,36 @@
 # Runbook vận hành — open_claw
 
-Production Railway: **chỉ `openclaw-gateway`**.
+Production: project Railway `open_claw` — `openclaw-gateway` + `telegram-bot`.
 
 ---
 
-## 1. Dashboard nhanh
+## 1. Dashboard
 
 | Cần xem | Nơi |
 |---------|-----|
-| Log Gateway | Railway → `openclaw-gateway` → Logs |
-| DB / SQL | Supabase Dashboard |
-| Gemini quota | [Google AI Studio](https://aistudio.google.com) |
-| Code | GitHub → `open_claw` |
+| Gateway | Railway → `openclaw-gateway` → Logs |
+| Bot | Railway → `telegram-bot` → Logs |
+| Gemini | Google AI Studio |
 
 ---
 
-## 2. Deploy code mới
+## 2. Deploy
 
-```powershell
-git push origin main
-# Hoặc:
-cd apps\gateway
-npx @railway/cli redeploy --service openclaw-gateway --environment production
-```
+`git push origin main` hoặc `railway up . --path-as-root` từ `apps/gateway` / `apps/telegram-bot`.
 
 ---
 
-## 3. Gateway không phản hồi / lỗi model
+## 3. Bot im lặng
 
 | Bước | Việc |
 |------|------|
-| 1 | Railway → `openclaw-gateway` → Logs |
-| 2 | Kiểm tra `GEMINI_API_KEY` / `GOOGLE_API_KEY` (AI Studio) |
-| 3 | Xác nhận model = `google/gemini-3.5-flash` trong template |
-| 4 | `powershell -File tools\set-railway-secrets.ps1` + redeploy |
-| 5 | Xem [MODELS.md](./MODELS.md) |
+| 1 | `ALLOWED_CHAT_IDS` có chứa chat_id? (`/chatid`) |
+| 2 | `TELEGRAM_BOT_TOKEN` đã set trên Railway? |
+| 3 | `OPENCLAW_GATEWAY_TOKEN` khớp gateway |
+| 4 | Gateway logs — Gemini 3.5 OK? |
 
 ---
 
-## 4. Supabase
+## 4. Rotate token
 
-```bash
-supabase link --project-ref ikcavxwchowbgrkhfxra
-supabase db push
-```
-
----
-
-## 5. Rotate token gateway
-
-Đổi `OPENCLAW_GATEWAY_TOKEN` trong `.env.secrets` → `set-railway-secrets.ps1` → redeploy.
-
----
-
-## 6. Dọn Railway cũ
-
-Xóa project **`telegram_bot`** (trống) trên Railway Dashboard nếu chưa xóa.
+`OPENCLAW_GATEWAY_TOKEN` hoặc `TELEGRAM_BOT_TOKEN` → cập nhật `.env.secrets` → `set-railway-secrets.ps1` → redeploy service liên quan.

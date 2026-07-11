@@ -1,0 +1,25 @@
+name: CI — telegram-bot
+
+on:
+  pull_request:
+    paths:
+      - "apps/telegram-bot/**"
+      - ".github/workflows/ci-telegram-bot.yml"
+  push:
+    branches: [main]
+    paths:
+      - "apps/telegram-bot/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install and pytest
+        working-directory: apps/telegram-bot
+        run: |
+          pip install -r requirements.txt
+          python -m pytest tests/ -q

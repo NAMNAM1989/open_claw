@@ -1,21 +1,106 @@
 {
   "agents": {
     "defaults": {
-      "model": { "primary": "google/gemini-3.5-flash" },
+      "model": {
+        "primary": "google/gemini-3.5-flash",
+        "fallbacks": [
+          "openai/gpt-4o-mini",
+          "deepseek/deepseek-v4-flash"
+        ]
+      },
       "workspace": "/app/workspace",
-      "compaction": { "mode": "safeguard" },
-      "memorySearch": { "enabled": false }
+      "compaction": {
+        "mode": "safeguard",
+        "memoryFlush": { "enabled": false }
+      },
+      "memorySearch": { "enabled": false },
+      "thinkingDefault": "off",
+      "verboseDefault": "off",
+      "reasoningDefault": "off",
+      "heartbeat": {
+        "every": "0m",
+        "includeSystemPromptSection": false
+      },
+      "contextInjection": "continuation-skip",
+      "bootstrapMaxChars": 1200,
+      "bootstrapTotalMaxChars": 2500,
+      "bootstrapPromptTruncationWarning": "off",
+      "imageMaxDimensionPx": 512,
+      "models": {
+        "google/gemini-3.5-flash": {
+          "params": {
+            "maxTokens": 250,
+            "thinking": "off"
+          }
+        },
+        "openai/gpt-4o-mini": {
+          "params": {
+            "maxTokens": 250
+          }
+        },
+        "deepseek/deepseek-v4-flash": {
+          "params": {
+            "maxTokens": 250
+          }
+        }
+      }
     },
     "list": [
       {
         "id": "default",
         "workspace": "/app/workspace",
-        "model": { "primary": "google/gemini-3.5-flash" }
+        "model": {
+          "primary": "google/gemini-3.5-flash",
+          "fallbacks": [
+            "openai/gpt-4o-mini",
+            "deepseek/deepseek-v4-flash"
+          ]
+        },
+        "thinkingDefault": "off",
+        "heartbeat": { "every": "0m" }
       }
     ]
   },
+  "tools": {
+    "deny": ["group:web", "browser", "exec", "process", "canvas", "group:ui"]
+  },
   "channels": {
     "telegram": { "enabled": false }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "openai": {
+        "baseUrl": "https://api.openai.com/v1",
+        "api": "openai-completions",
+        "apiKey": "${OPENAI_API_KEY}",
+        "models": [
+          {
+            "id": "gpt-4o-mini",
+            "name": "GPT-4o Mini",
+            "reasoning": false,
+            "input": ["text", "image"],
+            "contextWindow": 128000,
+            "maxTokens": 16384
+          }
+        ]
+      },
+      "deepseek": {
+        "baseUrl": "https://api.deepseek.com",
+        "api": "openai-completions",
+        "apiKey": "${DEEPSEEK_API_KEY}",
+        "models": [
+          {
+            "id": "deepseek-v4-flash",
+            "name": "DeepSeek V4 Flash",
+            "reasoning": true,
+            "input": ["text"],
+            "contextWindow": 128000,
+            "maxTokens": 8192
+          }
+        ]
+      }
+    }
   },
   "gateway": {
     "port": 18789,
@@ -33,14 +118,20 @@
     }
   },
   "plugins": {
+    "load": {
+      "paths": ["/app/vendor-plugins/deepseek-provider"]
+    },
     "entries": {
       "google": { "enabled": true },
-      "active-memory": { "enabled": true },
-      "memory-wiki": { "enabled": true },
-      "document-extract": { "enabled": true },
-      "cursor-agent": { "enabled": false },
-      "openai": { "enabled": false },
-      "deepseek": { "enabled": false }
+      "openai": { "enabled": true },
+      "deepseek": { "enabled": true },
+      "active-memory": { "enabled": false },
+      "memory-wiki": { "enabled": false },
+      "document-extract": { "enabled": false },
+      "browser": { "enabled": false },
+      "canvas": { "enabled": false },
+      "phone-control": { "enabled": false },
+      "talk-voice": { "enabled": false }
     }
   }
 }

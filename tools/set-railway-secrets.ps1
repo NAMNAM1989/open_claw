@@ -1,8 +1,13 @@
 # Set Railway secrets from local file (values never printed)
 # Usage:
 #   1. Copy .env.example -> .env.secrets (gitignored)
-#   2. Fill: GEMINI_API_KEY, OPENCLAW_GATEWAY_TOKEN
+#   2. Fill GEMINI_API_KEY, OPENCLAW_GATEWAY_TOKEN, TELEGRAM_BOT_TOKEN
 #   3. powershell -File tools\set-railway-secrets.ps1
+# Optional: -SkipTelegramBot if only updating gateway
+
+param(
+    [switch]$SkipTelegramBot
+)
 
 $ErrorActionPreference = "Stop"
 $root = Split-Path $PSScriptRoot -Parent
@@ -48,15 +53,44 @@ $token = $envMap["OPENCLAW_GATEWAY_TOKEN"]
 Push-Location $root
 try {
     Write-Host "Setting openclaw-gateway (GEMINI, GOOGLE, TOKEN, PORT)..."
-    railway variable set `
-        "GEMINI_API_KEY=$gemini" `
-        "GOOGLE_API_KEY=$google" `
-        "OPENCLAW_GATEWAY_TOKEN=$token" `
-        "PORT=$port" `
+    $gwVars = @(
+        "GEMINI_API_KEY=$gemini",
+        "GOOGLE_API_KEY=$google",
+        "OPENCLAW_GATEWAY_TOKEN=$token",
+        "PORT=$port"
+    )
+    if ($envMap["OPENAI_API_KEY"]) {
+        $gwVars += "OPENAI_API_KEY=$($envMap['OPENAI_API_KEY'])"
+    }
+    if ($envMap["DEEPSEEK_API_KEY"]) {
+        $gwVars += "DEEPSEEK_API_KEY=$($envMap['DEEPSEEK_API_KEY'])"
+    }
+    railway variable set @gwVars `
         --service openclaw-gateway `
         --environment production `
         --json | Out-Null
     railway service redeploy --service openclaw-gateway --environment production --yes 2>&1 | Out-Null
+
+    if (-not $SkipTelegramBot) {
+        if (-not $envMap["TELEGRAM_BOT_TOKEN"]) {
+            Write-Host "Missing TELEGRAM_BOT_TOKEN in .env.secrets"
+            exit 1
+        }
+        $botVars = @(
+            "TELEGRAM_BOT_TOKEN=$($envMap['TELEGRAM_BOT_TOKEN'])",
+            "OPENCLAW_GATEWAY_TOKEN=$token",
+            "OPENCLAW_BASE_URL=http://openclaw-gateway.railway.internal:18789/v1"
+        )
+        if ($envMap["ALLOWED_CHAT_IDS"]) {
+            $botVars += "ALLOWED_CHAT_IDS=$($envMap['ALLOWED_CHAT_IDS'])"
+        }
+        Write-Host "Setting telegram-bot..."
+        railway variable set @botVars `
+            --service telegram-bot `
+            --environment production `
+            --json | Out-Null
+        railway service redeploy --service telegram-bot --environment production --yes 2>&1 | Out-Null
+    }
 
     Write-Host "Done. Check: railway service status --json"
 } finally {
