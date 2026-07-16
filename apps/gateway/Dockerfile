@@ -19,7 +19,10 @@ WORKDIR /app
 RUN mkdir -p /app/workspace /root/.openclaw
 
 # Local PoC plugin (link-only legal research) — baked like deepseek, survives volume wipe
+# index.js at package root (avoid dist/ being dropped by upload ignore rules)
 COPY vendor-plugins/vietnam-legal-research /app/vendor-plugins/vietnam-legal-research
+RUN test -f /app/vendor-plugins/vietnam-legal-research/index.js \
+  && test -f /app/vendor-plugins/vietnam-legal-research/openclaw.plugin.json
 
 COPY workspace /app/workspace
 
