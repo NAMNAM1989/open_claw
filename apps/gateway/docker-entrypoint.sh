@@ -53,9 +53,17 @@ if [ -d /app/vendor-plugins/deepseek-provider ]; then
   openclaw plugins enable deepseek 2>&1 || true
 fi
 
+if [ -d /app/vendor-plugins/vietnam-legal-research ]; then
+  echo "[entrypoint] Ensuring vietnam-legal-research plugin is installed"
+  openclaw plugins install --link /app/vendor-plugins/vietnam-legal-research 2>&1 || \
+    openclaw plugins install /app/vendor-plugins/vietnam-legal-research 2>&1 || \
+    echo "[entrypoint] WARN: vietnam-legal-research plugin install failed" >&2
+  openclaw plugins enable vietnam-legal-research 2>&1 || true
+fi
+
 # Re-apply production template AFTER plugin CLI (it mutates openclaw.json)
 write_config
-echo "[entrypoint] Production openclaw.json applied (models.providers openai+deepseek)"
+echo "[entrypoint] Production openclaw.json applied (models.providers openai+deepseek, legal PoC)"
 
 PORT="${PORT:-18789}"
 echo "[entrypoint] Starting OpenClaw gateway on :${PORT}"

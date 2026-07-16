@@ -4,6 +4,8 @@ npm-cache/
 
 # Build
 dist/
+!apps/gateway/vendor-plugins/**/dist/
+!apps/gateway/vendor-plugins/**/dist/**
 *.tgz
 
 # Logs / OS

@@ -123,12 +123,23 @@
   },
   "plugins": {
     "load": {
-      "paths": ["/app/vendor-plugins/deepseek-provider"]
+      "paths": [
+        "/app/vendor-plugins/deepseek-provider",
+        "/app/vendor-plugins/vietnam-legal-research"
+      ]
     },
     "entries": {
       "google": { "enabled": true },
       "openai": { "enabled": true },
       "deepseek": { "enabled": true },
+      "vietnam-legal-research": {
+        "enabled": true,
+        "config": {
+          "integrationMode": "link-only",
+          "requestsPerMinute": 5,
+          "cacheTtlSeconds": 21600
+        }
+      },
       "active-memory": { "enabled": false },
       "memory-wiki": { "enabled": false },
       "document-extract": { "enabled": false },

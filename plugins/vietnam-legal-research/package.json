@@ -1,0 +1,38 @@
+{
+  "name": "openclaw-vietnam-legal-research",
+  "version": "0.1.0",
+  "private": true,
+  "description": "OpenClaw PoC: Vietnam legal research (link-only + official sources; no TVPL scraping by default).",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "files": [
+    "dist/index.js",
+    "openclaw.plugin.json",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --external:openclaw",
+    "dev": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --external:openclaw --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "openclaw": {
+    "extensions": [
+      "./dist/index.js"
+    ],
+    "compat": {
+      "pluginApi": ">=2026.3.2",
+      "minGatewayVersion": ">=2026.3.2"
+    }
+  },
+  "peerDependencies": {
+    "openclaw": ">=2026.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.2",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.7.0",
+    "vitest": "^4.0.18"
+  }
+}

@@ -15,6 +15,16 @@ Lộ trình plugin trong monorepo, tách **local dev** vs **Railway production**
 | **Production** | `enabled: false` trên gateway Railway |
 | **Publish** | npm `openclaw-cursor-agent` (tùy chọn) |
 
+### `vietnam-legal-research` v0.1.0 (PoC)
+
+| | |
+|---|---|
+| **Môi trường** | Local / opt-in; chưa bake vào Railway |
+| **Chức năng** | Tool `vietnam_legal_research` — link-only + nguồn chính phủ |
+| **Production** | Mặc định không scrape TVPL; chờ cấp phép API |
+| **Docs** | `docs/integrations/thuvienphapluat/` |
+| **Skill** | `skills/vietnam-legal-research/` |
+
 ---
 
 ## Phase 2 — `namnam-supabase` (đề xuất)

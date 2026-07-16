@@ -1,0 +1,34 @@
+{
+  "id": "vietnam-legal-research",
+  "name": "Vietnam Legal Research",
+  "description": "Limited PoC for Vietnam legal lookup: citation guardrails, official source links, TVPL search URLs. Does not scrape thuvienphapluat.vn by default.",
+  "version": "0.1.0",
+  "activation": {
+    "onStartup": true
+  },
+  "contracts": {
+    "tools": [
+      "vietnam_legal_research"
+    ]
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "integrationMode": {
+        "type": "string",
+        "enum": ["link-only", "official", "public-search", "browser"],
+        "description": "Default link-only. browser is blocked by source policy unless explicitly allowed."
+      },
+      "requestsPerMinute": {
+        "type": "number",
+        "minimum": 1,
+        "maximum": 60
+      },
+      "cacheTtlSeconds": {
+        "type": "number",
+        "minimum": 0
+      }
+    }
+  }
+}
